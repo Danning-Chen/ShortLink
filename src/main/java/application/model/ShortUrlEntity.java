@@ -12,8 +12,8 @@ public class ShortUrlEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(length = 16, unique = true)
+    
+    @Column(nullable = true, length = 16, unique = true)
     private String code; // 由 id -> Base62 生成
 
     @Column(nullable = false, columnDefinition = "text")

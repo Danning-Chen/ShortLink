@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional;
 
 import java.net.URI;
 import java.time.Instant;
-import java.util.Set;
 
 @Service
 public class ShortUrlService {
@@ -34,6 +33,10 @@ public class ShortUrlService {
 
         row.setCode(code);
         return repository.save(row);
+    }
+
+    public ShortUrlEntity find(String code){
+        return repository.findByCode(code).orElse(null);
     }
 
     private static String normalizeHttpUrl(String raw) {
