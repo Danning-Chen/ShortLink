@@ -12,19 +12,24 @@ public class ShortUrlEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
     @Column(nullable = true, length = 16, unique = true)
-    private String code; // 由 id -> Base62 生成
+    private String code;
 
     @Column(nullable = false, columnDefinition = "text")
     private String longUrl;
 
-    private Instant expiresAt; // null = 永不过期
+    private Instant expiresAt;
 
     @Column(nullable = false)
     private Boolean enabled = true;
 
-    // getter/setter
+    @Column(nullable = false)
+    private long clickCount = 0L;
+
     public Long getId() {
         return id;
     }
@@ -53,11 +58,27 @@ public class ShortUrlEntity {
         this.expiresAt = expiresAt;
     }
 
-    public Boolean getEnabled() {
+    public Boolean isEnabled() {
         return enabled;
     }
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public long getClickCount(){
+        return clickCount;
+    }
+
+    public void setClickCount(long clickCount){
+        this.clickCount = clickCount;
+    }
+
+    public Instant getCreatedAt(){
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt){
+        this.createdAt = createdAt;
     }
 }

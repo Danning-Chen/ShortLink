@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import application.dto.CreateUrlDTO;
+import application.dto.UrlStatsDTO;
 import application.model.ShortUrlEntity;
 import application.service.ShortUrlService;
 import jakarta.validation.Valid;
@@ -35,7 +36,7 @@ public class UrlController {
     public ResponseEntity<?> createUrl(@Valid @RequestBody CreateUrlDTO request) throws IOException {
 
         ShortUrlEntity s = service.create(request);
-        String shortUrl = "http://localhost:8080/" + s.getCode();
+        String shortUrl = "http://localhost:8080/r/" + s.getCode();
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("code", s.getCode());
@@ -44,11 +45,11 @@ public class UrlController {
         return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/{shortUrl}")
+    @GetMapping("/r/{shortUrl}")
     public ResponseEntity<?> redirect(@PathVariable String shortUrl) throws IOException {
 
         ShortUrlEntity s = service.find(shortUrl);
-        if (s == null || !s.getEnabled()) {
+        if (s == null || !s.isEnabled()) {
             return ResponseEntity.notFound().build();
         }
 
@@ -56,8 +57,26 @@ public class UrlController {
             return ResponseEntity.status(HttpStatus.GONE).body("短链已过期");
         }
 
+        service.increamentClick(shortUrl);
+
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(URI.create(s.getLongUrl()))
                 .build();
+    }
+
+    @GetMapping("/stats/{code}")
+    public ResponseEntity<?> stats(@PathVariable String code) {
+        ShortUrlEntity s = service.find(code);
+        if (s == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("短链不存在");
+        }
+        UrlStatsDTO dto = new UrlStatsDTO(
+                s.getCode(),
+                s.getLongUrl(),
+                s.getCreatedAt(),
+                s.getExpiresAt(),
+                s.isEnabled(),
+                s.getClickCount());
+        return ResponseEntity.ok(dto);
     }
 }

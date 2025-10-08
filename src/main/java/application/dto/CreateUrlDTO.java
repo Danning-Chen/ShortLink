@@ -6,7 +6,7 @@ import java.time.Instant;
 public class CreateUrlDTO {
     @NotBlank(message = "Long url can not be empty!!")
     private String longUrl;
-
+     
     private Instant expiresAt;
 
     public String getLongUrl() { return longUrl; }
