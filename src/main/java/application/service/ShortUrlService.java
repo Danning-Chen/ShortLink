@@ -7,6 +7,7 @@ import application.dto.CreateUrlDTO;
 import application.model.ShortUrlEntity;
 import application.repository.ShortUrlRepository;
 import jakarta.transaction.Transactional;
+import application.component.IdGenerator;
 
 import java.net.URI;
 import java.time.Instant;
@@ -18,10 +19,11 @@ import java.time.Duration;
 public class ShortUrlService {
     private final ShortUrlRepository repository;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final IdGenerator idGenerator;
 
-    public ShortUrlService(ShortUrlRepository repository, RedisTemplate<String, Object> redisTemplate) {
+    public ShortUrlService(IdGenerator idGenerator ,ShortUrlRepository repository, RedisTemplate<String, Object> redisTemplate) {
         this.repository = repository;
-
+        this.idGenerator = idGenerator;
         this.redisTemplate = redisTemplate;
     }
 
@@ -34,11 +36,14 @@ public class ShortUrlService {
     public ShortUrlEntity create(CreateUrlDTO request) {
         String normalized = normalizeHttpUrl(request.getLongUrl());
         Instant exp = validateExpiry(request.getExpiresAt());
-
+        
+        long id = idGenerator.nextId();
         ShortUrlEntity row = new ShortUrlEntity();
+        row.setId(id);
         row.setLongUrl(normalized);
         row.setExpiresAt(exp);
         row.setEnabled(true);
+
         row = repository.save(row);
 
         String code = Base62.encode(row.getId());

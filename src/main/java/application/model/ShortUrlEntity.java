@@ -10,7 +10,6 @@ import java.time.Instant;
 public class ShortUrlEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, updatable = false)
@@ -29,6 +28,10 @@ public class ShortUrlEntity {
 
     @Column(nullable = false)
     private long clickCount = 0L;
+    
+    public void setId(Long id){
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
