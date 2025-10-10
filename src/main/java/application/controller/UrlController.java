@@ -41,7 +41,7 @@ public class UrlController {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("code", s.getCode());
         body.put("shortUrl", shortUrl);
-        body.put("expiresAt", s.getExpiresAt()); // 可以为 null
+        body.put("expiresAt", s.getExpiresAt());
         return ResponseEntity.ok(body);
     }
 
