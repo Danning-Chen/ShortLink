@@ -113,13 +113,13 @@ public class ShortUrlService {
 
         String scheme = u.getScheme();
         if (scheme == null || !(scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
-            throw new IllegalArgumentException("仅支持 http/https 链接");
+            throw new IllegalArgumentException("Support http/https links only!!");
         }
         scheme = scheme.toLowerCase();
 
         String host = u.getHost();
         if (host == null)
-            throw new IllegalArgumentException("URL 缺少主机名");
+            throw new IllegalArgumentException("URL missing host name!!");
         host = host.toLowerCase(); 
 
         String userInfo = u.getUserInfo(); 
@@ -142,7 +142,7 @@ public class ShortUrlService {
         if (expiresAt == null)
             return null;
         if (expiresAt.isBefore(Instant.now()))
-            throw new IllegalArgumentException("过期时间必须晚于当前时间");
+            throw new IllegalArgumentException("Expiry time must not be early than current time!!");
         return expiresAt;
     }
 

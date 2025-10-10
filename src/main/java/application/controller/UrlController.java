@@ -54,7 +54,7 @@ public class UrlController {
         }
 
         if (s.getExpiresAt() != null && s.getExpiresAt().isBefore(Instant.now())) {
-            return ResponseEntity.status(HttpStatus.GONE).body("短链已过期");
+            return ResponseEntity.status(HttpStatus.GONE).body("The short url has expired!!");
         }
 
         service.increamentClick(shortUrl);
@@ -68,7 +68,7 @@ public class UrlController {
     public ResponseEntity<?> stats(@PathVariable String code) {
         ShortUrlEntity s = service.find(code);
         if (s == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("短链不存在");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The short url doesn't exist!!");
         }
         UrlStatsDTO dto = new UrlStatsDTO(
                 s.getCode(),
